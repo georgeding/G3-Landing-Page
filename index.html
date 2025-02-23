@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Glitch Landing Page</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome for Social Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        /* Static Noise Effect */
+        @keyframes noise {
+            0% { background-position: 0 0; }
+            100% { background-position: 100px 100px; }
+        }
+
+        .static-text {
+            background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif');
+            background-size: cover;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: noise 1s infinite linear;
+        }
+
+        /* TV Glitch Effect */
+        @keyframes glitch {
+            0% { transform: translate(0); opacity: 1; }
+            20% { transform: translate(-1px, 2px); opacity: 0.9; }
+            40% { transform: translate(1px, -1px); opacity: 1; }
+            60% { transform: translate(-2px, 2px); opacity: 0.95; }
+            80% { transform: translate(1px, -2px); opacity: 1; }
+            100% { transform: translate(0); opacity: 1; }
+        }
+
+        .glitch {
+            font-size: 4rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            animation: glitch 0.8s infinite alternate;
+            text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #0ff;
+            box-shadow: 0 0 10px #0ff;
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+
+        /* Cyberpunk Box */
+        .cyber-box {
+            border: 2px solid #0ff;
+            box-shadow: 0 0 15px #0ff;
+            padding: 40px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Cyberpunk Button Hover Effect */
+        .btn-glow {
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+        }
+
+        .btn-glow:hover {
+            box-shadow: 0 0 20px #f0f, 0 0 40px #f0f;
+            transform: scale(1.05);
+        }
+
+        /* Social Media Buttons */
+        .social-btn {
+            transition: all 0.3s ease-in-out;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+
+        .twitter { background: #1DA1F2; }
+        .discord { background: #5865F2; }
+        .instagram { background: #E1306C; }
+
+        .social-btn:hover {
+            filter: brightness(1.3);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-black text-cyan-400 flex items-center justify-center h-screen">
+    <div class="cyber-box text-center">
+        <h1 class="glitch static-text" data-text="COMING SOON">COMING SOON</h1>
+
+        <!-- Countdown Timer -->
+        <p id="countdown" class="text-lg mt-4"></p>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar mt-4">
+            <div id="progress-bar-fill" class="progress-bar-fill"></div>
+        </div>
+
+        <!-- Waitlist Form -->
+        <form id="waitlist-form" class="mt-6 flex flex-col items-center">
+            <input type="email" id="email" placeholder="Enter your email" required
+                class="bg-black text-cyan-400 border border-cyan-400 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400 w-64 text-center">
+            <button type="submit"
+                class="mt-4 bg-cyan-400 text-black px-6 py-2 rounded-md font-bold btn-glow">
+                Join Waitlist
+            </button>
+        </form>
+
+        <!-- Social Media Buttons -->
+        <div class="mt-6 flex justify-center space-x-6">
+            <a href="https://twitter.com" target="_blank" class="social-btn twitter text-white"><i class="fa-brands fa-twitter"></i></a>
+            <a href="https://discord.com" target="_blank" class="social-btn discord text-white"><i class="fa-brands fa-discord"></i></a>
+            <a href="https://instagram.com" target="_blank" class="social-btn instagram text-white"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+    </div>
+
+    <!-- JavaScript for Countdown Timer & Progress Bar -->
+    <script>
+        function updateCountdown() {
+            const targetDate = new Date("July 1, 2025 00:00:00").getTime();
+            const now = new Date().getTime();
+            const timeLeft = targetDate - now;
+
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            if (timeLeft < 0) {
+                document.getElementById("countdown").innerHTML = "We're Live!";
+            }
+
+            // Update Progress Bar
+            const totalDuration = targetDate - new Date("Feb 23, 2025 00:00:00").getTime();
+            const elapsedTime = now - new Date("Feb 23, 2025 00:00:00").getTime();
+            const progressPercentage = (elapsedTime / totalDuration) * 100;
+            document.getElementById("progress-bar-fill").style.width = `${progressPercentage}%`;
+        }
+
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
