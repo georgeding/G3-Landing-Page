@@ -30,10 +30,10 @@
         /* TV Glitch Effect */
         @keyframes glitch {
             0% { transform: translate(0); opacity: 1; }
-            20% { transform: translate(-1px, 2px); opacity: 0.9; }
-            40% { transform: translate(1px, -1px); opacity: 1; }
+            20% { transform: translate(-2px, 2px); opacity: 0.9; }
+            40% { transform: translate(2px, -2px); opacity: 1; }
             60% { transform: translate(-2px, 2px); opacity: 0.95; }
-            80% { transform: translate(1px, -2px); opacity: 1; }
+            80% { transform: translate(2px, -2px); opacity: 1; }
             100% { transform: translate(0); opacity: 1; }
         }
 
@@ -72,37 +72,47 @@
             background: rgba(0, 0, 0, 0.8);
         }
 
-        /* Cyberpunk Button Hover Effect */
-        .btn-glow {
+        /* Cyberpunk Popup Modal */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #0ff;
+            box-shadow: 0 0 15px #0ff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: #0ff;
+            font-size: 1.2rem;
+            width: 300px;
+            opacity: 0;
+            visibility: hidden;
             transition: all 0.3s ease-in-out;
-            box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
         }
 
-        .btn-glow:hover {
-            box-shadow: 0 0 20px #f0f, 0 0 40px #f0f;
-            transform: scale(1.05);
+        .popup.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
         }
 
-        /* Social Media Buttons */
-        .social-btn {
-            transition: all 0.3s ease-in-out;
-            padding: 10px;
-            border-radius: 50%;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
+        .popup button {
+            margin-top: 10px;
+            background: #0ff;
+            color: black;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s;
         }
 
-        .twitter { background: #1DA1F2; }
-        .discord { background: #5865F2; }
-        .instagram { background: #E1306C; }
-
-        .social-btn:hover {
-            filter: brightness(1.3);
-            transform: scale(1.1);
+        .popup button:hover {
+            background: #f0f;
+            color: white;
         }
     </style>
 </head>
@@ -136,7 +146,13 @@
         </div>
     </div>
 
-    <!-- JavaScript for Countdown Timer & Progress Bar -->
+    <!-- Custom Popup Modal -->
+    <div id="popup" class="popup">
+        <p id="popup-message">Email submitted</p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+
+    <!-- JavaScript for Countdown Timer, Progress Bar & Popup -->
     <script>
         function updateCountdown() {
             const targetDate = new Date("July 1, 2025 00:00:00").getTime();
@@ -150,11 +166,6 @@
 
             document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-            if (timeLeft < 0) {
-                document.getElementById("countdown").innerHTML = "We're Live!";
-            }
-
-            // Update Progress Bar
             const totalDuration = targetDate - new Date("Feb 23, 2025 00:00:00").getTime();
             const elapsedTime = now - new Date("Feb 23, 2025 00:00:00").getTime();
             const progressPercentage = (elapsedTime / totalDuration) * 100;
@@ -162,6 +173,37 @@
         }
 
         setInterval(updateCountdown, 1000);
+
+        function showPopup(message) {
+            document.getElementById("popup-message").innerText = message;
+            document.getElementById("popup").classList.add("show");
+        }
+
+        function closePopup() {
+            document.getElementById("popup").classList.remove("show");
+        }
+        document.getElementById("waitlist-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    const email = document.getElementById("email").value;
+
+    try {
+        const response = await fetch("https://emails-collect.kaijieding.workers.dev/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email }),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            showPopup(result.message);
+        } else {
+            showPopup("Error: " + result.error);
+        }
+    } catch (error) {
+        showPopup("Error submitting email. Please try again.");
+    }
+});
+
     </script>
 </body>
 </html>
